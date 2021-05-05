@@ -41,8 +41,8 @@ public class Bot extends TelegramWebhookBot {
 
     @Value("${bot.Username}")
     String botUsername;
-    @Value("${bot.Token}")
-    String botToken;
+//    @Value("${bot.Token}")
+    final String botToken = System.getenv("TOKEN");
     @Value("${bot.Path}")
     String botPath;
 

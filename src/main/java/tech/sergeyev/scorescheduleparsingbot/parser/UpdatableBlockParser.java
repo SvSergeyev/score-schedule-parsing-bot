@@ -44,8 +44,8 @@ public class UpdatableBlockParser implements Parser {
             String detailedScoreOrTimeOfStart = document
                     .select("div:nth-child(" + i + ") > table > tbody > tr.b-matches_data_bottom > td > em")
                     .text();
-            System.out.println("GAME: " + home + " " + currentScore +  " " + away);
-            System.out.println("DSCR: " + detailedScoreOrTimeOfStart);
+//            System.out.println("GAME: " + home + " " + currentScore +  " " + away);
+//            System.out.println("DSCR: " + detailedScoreOrTimeOfStart);
 
             String nextDate = document
                     .select("div:nth-child(" + (i + 1) + ") > table > tbody > tr.b-matches_data_top > td.e-matches_data_center")
