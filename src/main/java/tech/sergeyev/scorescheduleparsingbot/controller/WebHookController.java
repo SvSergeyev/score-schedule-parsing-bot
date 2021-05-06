@@ -13,7 +13,7 @@ import tech.sergeyev.scorescheduleparsingbot.bot.Bot;
 @RestController
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class WebHookController {
-    Bot bot;
+    final Bot bot;
 
     public WebHookController(Bot bot) {
         this.bot = bot;

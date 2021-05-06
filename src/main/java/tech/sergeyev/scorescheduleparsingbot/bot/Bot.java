@@ -41,10 +41,12 @@ public class Bot extends TelegramWebhookBot {
 
     @Value("${bot.Username}")
     String botUsername;
-//    @Value("${bot.Token}")
-    final String botToken = System.getenv("TOKEN");
+    @Value("${bot.Token}")
+    String botToken;
     @Value("${bot.Path}")
     String botPath;
+    @Value("${bot.Admin}")
+    String ADMIN_CHAT;
 
     @Autowired
     public Bot(@Qualifier("clubsPageParser") ClubsPageParser clubsParser,
@@ -83,6 +85,21 @@ public class Bot extends TelegramWebhookBot {
 
     @Override
     public BotApiMethod<?> onWebhookUpdateReceived(Update update) {
+
+        /*
+        SERVICE
+         */
+        try {
+            SendMessage answer = new SendMessage();
+            answer.setText("Get new Update");
+            answer.setChatId(ADMIN_CHAT);
+            execute(answer);
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
+        /*
+        END
+         */
 
         if (!update.hasMessage() || !update.getMessage().hasText()) {
             return null;
