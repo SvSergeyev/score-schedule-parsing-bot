@@ -1,4 +1,4 @@
-package tech.sergeyev.scorescheduleparsingbot.parser.clubs;
+package tech.sergeyev.scorescheduleparsingbot.parser.hockey.clubs;
 
 import org.jsoup.nodes.Document;
 import org.slf4j.Logger;
@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 import tech.sergeyev.scorescheduleparsingbot.model.Team;
-import tech.sergeyev.scorescheduleparsingbot.parser.Parser;
+import tech.sergeyev.scorescheduleparsingbot.parser.hockey.HockeyParser;
 import tech.sergeyev.scorescheduleparsingbot.service.TeamService;
 import tech.sergeyev.scorescheduleparsingbot.service.Transcriptor;
 
@@ -16,7 +16,7 @@ import java.util.List;
 
 @Service
 @PropertySource("classpath:bot.properties")
-public class ClubsPageParser implements Parser {
+public class ClubsPageParser extends HockeyParser {
     private final Logger LOGGER = LoggerFactory.getLogger(ClubsPageParser.class);
 
     @Value("${url.hockey.clubs}")
@@ -31,29 +31,32 @@ public class ClubsPageParser implements Parser {
         if (!teamService.teamsTableIsEmpty()) return;
 
         Document document = getDataFromUrl(url);
+
         List<String> conferences = new ArrayList<>();
-        conferences.add(getConferenceFromSelector(ClubsParserSelectors.EASTERN_CONFERENCE, document));
-        conferences.add(getConferenceFromSelector(ClubsParserSelectors.WESTERN_CONFERENCE, document));
+        conferences.add(getConferenceFromSelector(ClubsPageSelectors.EASTERN_CONFERENCE, document));
+        conferences.add(getConferenceFromSelector(ClubsPageSelectors.WESTERN_CONFERENCE, document));
 
         for (String conference : conferences) {
             for (int j = 2; j < 6; ) {
                 for (int i = 1; i < 100; i++) {
-                    boolean nextTeamIsNotAvailableCheck;
+                    boolean nextTeamIsNotAvailable;
                     Team team = new Team();
                     team.setConference(conference);
                     if (conference.equals("Восток")) {
-                        team.setName(getDataFromSelector(ClubsParserSelectors.EASTERN_NAME, document, i, j));
-                        team.setCity(getDataFromSelector(ClubsParserSelectors.EASTERN_CITY, document, i, j));
-                        nextTeamIsNotAvailableCheck = hasNotNextEast(i, j, document);
+                        team.setName(getTextBySelector(document, ClubsPageSelectors.EASTERN_NAME.getSelector(), i, j));
+                        team.setCity(getTextBySelector(document, ClubsPageSelectors.EASTERN_CITY.getSelector(), i, j));
+                        nextTeamIsNotAvailable = hasNotNextEntry(document, ClubsPageSelectors.EASTERN_NAME.getSelector(), j, i);
                     } else {
-                        team.setName(getDataFromSelector(ClubsParserSelectors.WESTERN_NAME, document, i, j));
-                        team.setCity(getDataFromSelector(ClubsParserSelectors.WESTERN_CITY, document, i, j));
-                        nextTeamIsNotAvailableCheck = hasNotNextWest(i, j, document);
+                        team.setName(getTextBySelector(document, ClubsPageSelectors.WESTERN_NAME.getSelector(), i, j));
+                        team.setCity(getTextBySelector(document, ClubsPageSelectors.WESTERN_CITY.getSelector(), i, j));
+                        nextTeamIsNotAvailable = hasNotNextEntry(document, ClubsPageSelectors.WESTERN_NAME.getSelector(), j, i);
                     }
                     team.setAbbreviation(getAbbreviationByTeam(team));
+
                     teamService.addTeam(team);
                     LOGGER.info("Add a new Team: " + team);
-                    if (nextTeamIsNotAvailableCheck) {
+
+                    if (nextTeamIsNotAvailable) {
                         j = j + 3;
                         break;
                     }
@@ -62,32 +65,10 @@ public class ClubsPageParser implements Parser {
         }
     }
 
-    private String getConferenceFromSelector(ClubsParserSelectors selector, Document document) {
-        return document.select(selector.getSelector()).text()
+    private String getConferenceFromSelector(ClubsPageSelectors selector, Document document) {
+        return getTextBySelector(document, selector.getSelector())
                 .replace("Конференция «", "")
                 .replace("»", "");
-    }
-
-    private String getDataFromSelector(ClubsParserSelectors selector, Document document, int i, int j) {
-        return document
-                .select(selector.getSelector()
-                        .replace("%j%", String.valueOf(j))
-                        .replace("%i%", String.valueOf(i)))
-                .text();
-    }
-
-    private boolean hasNotNextWest(int i, int j, Document document) {
-        return document.select(ClubsParserSelectors.WESTERN_NAME.getSelector()
-                .replace("%j%", String.valueOf(j))
-                .replace("%i%", String.valueOf(i + 1)))
-                .text().equals("");
-    }
-
-    private boolean hasNotNextEast(int i, int j, Document document) {
-        return document.select(ClubsParserSelectors.EASTERN_NAME.getSelector()
-                .replace("%j%", String.valueOf(j))
-                .replace("%i%", String.valueOf(i + 1)))
-                .text().equals("");
     }
 
     private String getAbbreviationByTeam(Team team) {

@@ -1,4 +1,4 @@
-package tech.sergeyev.scorescheduleparsingbot.parser.clubs;
+package tech.sergeyev.scorescheduleparsingbot.parser.hockey.clubs;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

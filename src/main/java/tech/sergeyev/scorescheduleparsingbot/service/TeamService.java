@@ -1,11 +1,9 @@
 package tech.sergeyev.scorescheduleparsingbot.service;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tech.sergeyev.scorescheduleparsingbot.model.Team;
-import tech.sergeyev.scorescheduleparsingbot.repository.TeamRepository;
+import tech.sergeyev.scorescheduleparsingbot.repository.hockey.TeamRepository;
 
 @Service
 public class TeamService {
@@ -45,5 +43,14 @@ public class TeamService {
 
     public boolean teamsTableIsEmpty() {
         return teamRepository.findById(1) == null;
+    }
+
+    public Team getTeamByAbbreviation(String abbreviation) {
+        return teamRepository.findTeamByAbbreviation(abbreviation);
+    }
+
+    @Transactional
+    public void dropTable() {
+        teamRepository.deleteAll();
     }
 }

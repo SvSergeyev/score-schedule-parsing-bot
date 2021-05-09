@@ -5,7 +5,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tech.sergeyev.scorescheduleparsingbot.model.Game;
-import tech.sergeyev.scorescheduleparsingbot.repository.GameRepository;
+import tech.sergeyev.scorescheduleparsingbot.model.Team;
+import tech.sergeyev.scorescheduleparsingbot.repository.hockey.GameRepository;
+
+import java.time.LocalDate;
 
 @Service
 public class GameService {
@@ -25,5 +28,20 @@ public class GameService {
 
     public boolean gamesTableIsEmpty() {
         return gameRepository.findGameById(1) == null;
+    }
+
+    public Game getGameByTeamsAndDate(Team home, Team away, LocalDate date) {
+        return gameRepository.findGameByTeamsAndDate(home, away, date);
+    }
+
+    @Transactional
+    public void updateGame(Game game) {
+        LOGGER.info("Game updated: " + game);
+        gameRepository.saveAndFlush(game);
+    }
+
+    @Transactional
+    public void dropTable() {
+        gameRepository.deleteAll();
     }
 }

@@ -1,12 +1,16 @@
-package tech.sergeyev.scorescheduleparsingbot.parser;
+package tech.sergeyev.scorescheduleparsingbot.parser.hockey.calendar;
 
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
 import org.jsoup.nodes.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 import tech.sergeyev.scorescheduleparsingbot.model.Game;
+import tech.sergeyev.scorescheduleparsingbot.parser.hockey.HockeyParser;
 import tech.sergeyev.scorescheduleparsingbot.service.GameService;
 import tech.sergeyev.scorescheduleparsingbot.service.TeamService;
 
@@ -16,43 +20,38 @@ import java.time.format.DateTimeFormatter;
 
 @Service
 @PropertySource("classpath:bot.properties")
-public class CalendarPageParser implements Parser {
-    private final Logger LOGGER = LoggerFactory.getLogger(CalendarPageParser.class);
+@FieldDefaults(level = AccessLevel.PRIVATE)
+public class CalendarPageParser extends HockeyParser {
+    final Logger LOGGER = LoggerFactory.getLogger(CalendarPageParser.class);
 
     @Value("${url.hockey.calendar}")
-    private String url;
-    private final TeamService teamService;
-    private final GameService gameService;
+    String url;
+    final TeamService teamService;
+    final GameService gameService;
 
-    public CalendarPageParser(TeamService teamService, GameService gameService) {
+    @Autowired
+    public CalendarPageParser(TeamService teamService,
+                              GameService gameService) {
         this.teamService = teamService;
         this.gameService = gameService;
     }
 
     public void start() {
+        LOGGER.info(this.getClass().getSimpleName() + " started");
+
         if (!gameService.gamesTableIsEmpty()) return;
 
         Document document = getDataFromUrl(url);
         for (int i = 1; i < 1000; i++) {
-            String dateAsString = document
-                    .select("#tab-calendar-all > div > div:nth-child(" + i + ") > b:nth-child(2)")
-                    .text();
+            LocalDate date = convertDate(getTextBySelector(document, CalendarPageSelectors.DATE.getSelector(), i));
             i++;
             for (int j = 1; j < 1000; j++) {
                 Game game = new Game();
-                String home = document
-                        .select("#tab-calendar-all > div > div:nth-child(" + i + ") > ul > li:nth-child(" + j + ") > dl:nth-child(1) > dd > h5 > a")
-                        .text();
-                String away = document
-                        .select("#tab-calendar-all > div > div:nth-child(" + i + ") > ul > li:nth-child(" + j + ") > dl.b-details.m-club.m-rightward > dd > h5 > a")
-                        .text();
-                String scoreOrTime = document
-                        .select("#tab-calendar-all > div > div:nth-child(" + i + ") > ul > li:nth-child(" + j + ") > dl.b-score > dt > h3")
-                        .text();
-                String period = document
-                        .select("#tab-calendar-all > div > div:nth-child(" + i + ") > ul > li:nth-child(" + j + ") > dl.b-score > dd > ul")
-                        .text();
-                LocalDate date = convertDate(dateAsString);
+                String home = getTextBySelector(document, CalendarPageSelectors.HOME.getSelector(), i, j);
+                String away = getTextBySelector(document, CalendarPageSelectors.AWAY.getSelector(), i, j);
+                String scoreOrTime = getTextBySelector(document, CalendarPageSelectors.SCORE_OR_TIME.getSelector(), i, j);
+                String period = getTextBySelector(document, CalendarPageSelectors.DETAILED_SCORE.getSelector(), i, j);
+
                 game.setDate(date);
                 game.setHome(teamService.getTeamByName(home));
                 game.setAway(teamService.getTeamByName(away));
@@ -67,31 +66,18 @@ public class CalendarPageParser implements Parser {
                 }
 
                 gameService.addGame(game);
-
-                if (hasNotNextGame(i, j, document)) {
+                boolean nextGameIsNotAvailable = hasNotNextEntry(document, CalendarPageSelectors.HOME.getSelector(), i, j);
+                if (nextGameIsNotAvailable) {
+                    LOGGER.info("End of the game day");
                     break;
                 }
             }
-            if (hasNotNextGameDay(i, document)) {
+            boolean nextDayIsNotAvailable = hasNotNextEntry(document, CalendarPageSelectors.DATE.getSelector(), i);
+            if (nextDayIsNotAvailable) {
+                LOGGER.info("End of game list");
                 break;
             }
         }
-    }
-
-    public boolean hasNotNextGame(int i, int j, Document document) {
-        j++;
-        String check = document
-                .select("#tab-calendar-all > div > div:nth-child(" + i + ") > ul > li:nth-child(" + j + ") > dl:nth-child(1) > dd > h5 > a")
-                .text();
-        return "".equals(check);
-    }
-
-    public boolean hasNotNextGameDay(int i, Document document) {
-        i++;
-        String check = document.select(
-                "#tab-calendar-all > div > div:nth-child(" + i + ") > b:nth-child(2)")
-                .text();
-        return "".equals(check);
     }
 
     private LocalDate convertDate(String dateAsString) {

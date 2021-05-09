@@ -17,13 +17,14 @@ import org.telegram.telegrambots.bots.TelegramWebhookBot;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-import tech.sergeyev.scorescheduleparsingbot.parser.CalendarPageParser;
+import tech.sergeyev.scorescheduleparsingbot.parser.hockey.calendar.CalendarPageParser;
 import tech.sergeyev.scorescheduleparsingbot.parser.Parser;
-import tech.sergeyev.scorescheduleparsingbot.parser.clubs.ClubsPageParser;
+import tech.sergeyev.scorescheduleparsingbot.parser.hockey.clubs.ClubsPageParser;
+import tech.sergeyev.scorescheduleparsingbot.parser.hockey.upgradable.UpgradableBlockParser;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,8 +37,7 @@ public class Bot extends TelegramWebhookBot {
     final Logger LOGGER = LoggerFactory.getLogger(Bot.class);
 
     final List<Parser> parsers = new ArrayList<>();
-    Parser clubsParser;
-    Parser calendarParser;
+    Parser hockeyParser;
 
     @Value("${bot.Username}")
     String botUsername;
@@ -49,12 +49,9 @@ public class Bot extends TelegramWebhookBot {
     String ADMIN_CHAT;
 
     @Autowired
-    public Bot(@Qualifier("clubsPageParser") ClubsPageParser clubsParser,
-               @Qualifier("calendarPageParser") CalendarPageParser calendarParser) {
-        this.clubsParser = clubsParser;
-        this.calendarParser = calendarParser;
-        parsers.add(clubsParser);
-        parsers.add(calendarParser);
+    public Bot(@Qualifier("hockeyParser") Parser hockeyParser) {
+        this.hockeyParser = hockeyParser;
+        parsers.add(hockeyParser);
     }
 
     @PostConstruct
@@ -77,7 +74,6 @@ public class Bot extends TelegramWebhookBot {
 
     @PostConstruct
     private void runAllParsers() {
-        LOGGER.info("runAllParsersMethod: started");
         for (Parser parser : parsers) {
             parser.start();
         }
@@ -85,37 +81,15 @@ public class Bot extends TelegramWebhookBot {
 
     @Override
     public BotApiMethod<?> onWebhookUpdateReceived(Update update) {
-
-        /*
-        SERVICE
-         */
-        try {
-            SendMessage answer = new SendMessage();
-            answer.setText("Get new Update");
-            answer.setChatId(ADMIN_CHAT);
-            execute(answer);
-        } catch (TelegramApiException e) {
-            e.printStackTrace();
-        }
-        /*
-        END
-         */
-
         if (!update.hasMessage() || !update.getMessage().hasText()) {
             return null;
         }
-
         String text = update.getMessage().getText();
         long chatId = update.getMessage().getChatId();
         SendMessage reply = new SendMessage();
         reply.setChatId(String.valueOf(chatId));
         reply.setText(text);
-        LOGGER.info("Get message from " + reply.getChatId() + " with text: " + reply.getText());
-        try {
-            execute(reply);
-        } catch (TelegramApiException e) {
-            e.printStackTrace();
-        }
+        LOGGER.info(LocalDateTime.now() + ": Get message from: " + reply.getChatId() + " with text: " + reply.getText());
         return reply;
     }
 }

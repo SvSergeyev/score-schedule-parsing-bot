@@ -6,6 +6,7 @@ import lombok.experimental.FieldDefaults;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Getter
@@ -31,5 +32,19 @@ public class Team {
     @Override
     public String toString() {
         return name + " (" + abbreviation + "), " + city;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Team)) return false;
+        Team team = (Team) o;
+        return getCity().equals(team.getCity()) &&
+                getName().equals(team.getName());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getCity(), getName());
     }
 }
