@@ -8,7 +8,7 @@ import lombok.experimental.FieldDefaults;
 @Getter
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class BotContext {
+public final class BotContext {
     Bot bot;
     long chatId;
     String inquiry;

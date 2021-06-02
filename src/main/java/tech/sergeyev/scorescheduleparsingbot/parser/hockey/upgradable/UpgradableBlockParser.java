@@ -22,7 +22,7 @@ import java.util.Objects;
 @Service
 @PropertySource("classpath:bot.properties")
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class UpgradableBlockParser extends HockeyParser {
+public final class UpgradableBlockParser extends HockeyParser {
     final Logger LOGGER = LoggerFactory.getLogger(UpgradableBlockParser.class);
 
     @Value("${url.hockey.calendar}")

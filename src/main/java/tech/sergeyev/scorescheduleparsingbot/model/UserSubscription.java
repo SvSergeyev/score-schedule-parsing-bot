@@ -11,7 +11,7 @@ import javax.persistence.Id;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Getter
 @Setter
-public class UserSubscription {
+public final class UserSubscription {
     @Id
     long chatId;
     boolean notified;

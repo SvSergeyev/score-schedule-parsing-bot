@@ -21,7 +21,7 @@ import java.time.format.DateTimeFormatter;
 @Service
 @PropertySource("classpath:bot.properties")
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class CalendarPageParser extends HockeyParser {
+public final class CalendarPageParser extends HockeyParser {
     final Logger LOGGER = LoggerFactory.getLogger(CalendarPageParser.class);
 
     @Value("${url.hockey.calendar}")
@@ -39,7 +39,11 @@ public class CalendarPageParser extends HockeyParser {
     public void start() {
         LOGGER.info(this.getClass().getSimpleName() + " started");
 
-        if (!gameService.gamesTableIsEmpty()) return;
+        if (!gameService.gamesTableIsEmpty()) {
+            LOGGER.warn("\"Games\" table is not empty. Table will be cleared");
+            gameService.dropTable();
+            LOGGER.info("\"Games\" table was cleared");
+        }
 
         Document document = getDataFromUrl(url);
         for (int i = 1; i < 1000; i++) {

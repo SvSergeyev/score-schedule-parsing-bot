@@ -16,7 +16,7 @@ import java.util.Objects;
 @Getter
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Game {
+public final class Game {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     int id;

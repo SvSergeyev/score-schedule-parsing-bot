@@ -28,8 +28,8 @@ public class HockeyParser implements Parser {
     final List<Parser> parsers = new ArrayList<>();
 
     @Autowired
-    public HockeyParser(@Qualifier("calendarPageParser") Parser calendarPageParser,
-                        @Qualifier("clubsPageParser") Parser clubsPageParser,
+    public HockeyParser(@Qualifier("clubsPageParser") Parser clubsPageParser,
+                        @Qualifier("calendarPageParser") Parser calendarPageParser,
                         @Qualifier("upgradableBlockParser") Parser upgradableBlockParser) {
         this.clubsPageParser = clubsPageParser;
         this.calendarPageParser = calendarPageParser;
@@ -57,11 +57,11 @@ public class HockeyParser implements Parser {
     }
 
     protected boolean hasNotNextEntry(Document document, String selector, int i) {
-        return ("").equals(getTextBySelector(document, selector, i));
+        return ("").equals(getTextBySelector(document, selector, ++i));
     }
 
-    protected boolean hasNotNextEntry(Document document, String selector, int constantVar, int incrementedVar) {
-        return ("").equals(getTextBySelector(document, selector, constantVar, incrementedVar));
+    protected boolean hasNotNextEntry(Document document, String selector, int i, int j) {
+        return ("").equals(getTextBySelector(document, selector, ++i, j));
     }
 
     @Override

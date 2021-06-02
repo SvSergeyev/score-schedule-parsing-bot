@@ -13,7 +13,7 @@ import java.util.Objects;
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @NoArgsConstructor
-public class Team {
+public final class Team {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     int id;
@@ -23,10 +23,10 @@ public class Team {
     String abbreviation;
     String conference;
 
-    @OneToMany(mappedBy = "home", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "home", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     List<Game> asHome = new ArrayList<>();
 
-    @OneToMany(mappedBy = "away", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "away", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     List<Game> asAway = new ArrayList<>();
 
     @Override

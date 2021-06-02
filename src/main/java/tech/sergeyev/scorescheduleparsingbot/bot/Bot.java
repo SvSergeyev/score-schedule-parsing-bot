@@ -33,7 +33,7 @@ import java.util.List;
 @NoArgsConstructor
 @PropertySource("classpath:bot.properties")
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Bot extends TelegramWebhookBot {
+public final class Bot extends TelegramWebhookBot {
     final Logger LOGGER = LoggerFactory.getLogger(Bot.class);
 
     final List<Parser> parsers = new ArrayList<>();
