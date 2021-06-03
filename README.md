@@ -23,7 +23,7 @@ Jsoup, Postgres SQL
 
 ### Текущее состояние разработки
 На указанное число реализованы следующие элементы:
-####03.06.2021
+#### 03.06.2021
 * Основной класс [Bot](https://github.com/SvSergeyev/score-schedule-parsing-bot/blob/master/src/main/java/tech/sergeyev/scorescheduleparsingbot/bot/Bot.java) 
 * [Парсеры](https://github.com/SvSergeyev/score-schedule-parsing-bot/tree/master/src/main/java/tech/sergeyev/scorescheduleparsingbot/parser/hockey) 
   для сайта **khl.ru**
