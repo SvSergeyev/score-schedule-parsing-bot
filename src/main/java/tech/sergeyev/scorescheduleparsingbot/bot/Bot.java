@@ -17,10 +17,8 @@ import org.telegram.telegrambots.bots.TelegramWebhookBot;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import tech.sergeyev.scorescheduleparsingbot.parser.hockey.calendar.CalendarPageParser;
+import tech.sergeyev.scorescheduleparsingbot.handler.DefaultHandler;
 import tech.sergeyev.scorescheduleparsingbot.parser.Parser;
-import tech.sergeyev.scorescheduleparsingbot.parser.hockey.clubs.ClubsPageParser;
-import tech.sergeyev.scorescheduleparsingbot.parser.hockey.upgradable.UpgradableBlockParser;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
@@ -74,13 +72,14 @@ public final class Bot extends TelegramWebhookBot {
 
     @PostConstruct
     private void runAllParsers() {
-        for (Parser parser : parsers) {
-            parser.start();
-        }
+        parsers.forEach(Parser::start);
     }
 
     @Override
     public BotApiMethod<?> onWebhookUpdateReceived(Update update) {
+        if (update.hasMessage()) {
+
+        }
         if (!update.hasMessage() || !update.getMessage().hasText()) {
             return null;
         }

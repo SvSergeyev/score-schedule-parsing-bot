@@ -37,5 +37,5 @@ public interface Parser {
         return document;
     }
 
-    void start();
+    public void start();
 }

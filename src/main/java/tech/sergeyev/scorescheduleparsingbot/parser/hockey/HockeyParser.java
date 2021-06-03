@@ -67,8 +67,6 @@ public class HockeyParser implements Parser {
     @Override
     public void start() {
         LOGGER.info(this.getClass().getSimpleName() + " started");
-        for (Parser parser : parsers) {
-            parser.start();
-        }
+        parsers.forEach(Parser::start);
     }
 }

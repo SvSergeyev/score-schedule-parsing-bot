@@ -1,8 +1,10 @@
 package tech.sergeyev.scorescheduleparsingbot.bot;
 
 public enum BotState {
-    START,
-    SPORT_CHANGE,
-    TEAM_CHANGE,
+    MAIN_MENU,
+    HOCKEY,
+    FORMULA,
+    HOCKEY_TEAM_CHANGE,
+    FORMULA_TEAM_CHANGE,
     SHOW_HELP;
 }
