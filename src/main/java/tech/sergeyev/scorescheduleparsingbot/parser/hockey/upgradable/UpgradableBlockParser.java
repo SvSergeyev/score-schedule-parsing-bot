@@ -68,10 +68,6 @@ public final class UpgradableBlockParser extends HockeyParser {
             Game gameFromDatabase = gameService.getGameByTeamsAndDate(home, away, date);
 
             if (gameFromDatabase != null && !gameFromDatabase.equals(gameWithUpdate)) {
-                LOGGER.info("Games comparision: \n"
-                        + "GFDB: " + gameFromDatabase + "\n"
-                        + "GFUB: " + gameWithUpdate + "\n"
-                        + "EQUL: " + gameFromDatabase.equals(gameWithUpdate) + "\n");
                 gameFromDatabase.setTotalScore(currentScore);
                 gameFromDatabase.setDetailScore(detailedScoreOrTimeOfStart);
                 gameService.updateGame(gameFromDatabase);

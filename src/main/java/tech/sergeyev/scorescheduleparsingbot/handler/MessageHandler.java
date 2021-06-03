@@ -7,7 +7,7 @@ import tech.sergeyev.scorescheduleparsingbot.bot.BotState;
 import tech.sergeyev.scorescheduleparsingbot.cache.UserCache;
 
 @Component
-public final class MessageHandler implements DefaultHandler{
+public class MessageHandler implements DefaultHandler {
     private final UserCache userCache;
 
     public MessageHandler(UserCache userCache) {
@@ -18,6 +18,7 @@ public final class MessageHandler implements DefaultHandler{
     public SendMessage handle(Update update) {
         String message = update.getMessage().getText().toLowerCase();
         long userId = update.getMessage().getFrom().getId();
+
         BotState botState;
         if (message.equals(ListOfCyrillicTextCommands.HOCKEY.getCyrillicText())) {
             botState = BotState.HOCKEY;
