@@ -3,32 +3,35 @@ package tech.sergeyev.scorescheduleparsingbot.parser.hockey.clubs;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.util.List;
+
 @Getter
 @AllArgsConstructor
 public enum TeamsAbbreviations {
-    KUNLUN_RED_STAR("КРС"),
-    SIBIR("СИБ"),
-    SALAVAT_YULAYEV("СЮЛ"),
-    BARYS("БАР"),
-    AVTOMOBILIST("АВТ"),
-    AMUR("АМР"),
-    AVANGARD("АВГ"),
-    TRAKTOR("ТРК"),
-    TORPEDO("ТОР"),
-    NEFTEKHIMIK("НХК"),
-    METALLURG("ММГ"),
-    AK_BARS("АКБ"),
-    TSSKA("ЦСК"),
-    LOKOMOTIV("ЛОК"),
-    DINAMO_R("ДРГ"),
-    DINAMO_MSK("ДИН"),
-    DINAMO_MN("ДМН"),
-    SPARTAK("СПР"),
-    SOCHI("СОЧ"),
-    SKA("СКА"),
-    SEVERSTAL("СЕВ"),
-    YOKERIT("ЙОК"),
-    VITYAZ("ВИТ");
+    KUNLUN_RED_STAR("КРС", "кун"),
+    SIBIR("СИБ", "сиб"),
+    SALAVAT_YULAYEV("СЮЛ", "сал"),
+    BARYS("БАР", "бар"),
+    AVTOMOBILIST("АВТ", "авт"),
+    AMUR("АМР", "аму"),
+    AVANGARD("АВГ", "ава"),
+    TRAKTOR("ТРК", "тра"),
+    TORPEDO("ТОР", "тор"),
+    NEFTEKHIMIK("НХК", "неф"),
+    METALLURG("ММГ", "мет"),
+    AK_BARS("АКБ", "акб"),
+    TSSKA("ЦСК", "цск"),
+    LOKOMOTIV("ЛОК", "лок"),
+    DINAMO_R("ДРГ", "дин"),
+    DINAMO_MSK("ДИН", "дин"),
+    DINAMO_MN("ДМН", "дин"),
+    SPARTAK("СПР", "спа"),
+    SOCHI("СОЧ", "соч"),
+    SKA("СКА", "ска"),
+    SEVERSTAL("СЕВ", "сев"),
+    YOKERIT("ЙОК", "йок"),
+    VITYAZ("ВИТ", "вит");
 
     String abbreviation;
+    String keyName;
 }

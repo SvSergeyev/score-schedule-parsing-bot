@@ -16,8 +16,8 @@ public interface GameRepository extends JpaRepository<Game, Integer> {
     @Query("SELECT g FROM Game g WHERE g.away = :team OR g.home = :team")
     List<Game> findCompletedGamesByTeam(@Param("team") Team team);
 
-    @Query("SELECT g FROM  Game g WHERE g.id = :id")
-    Game findGameById(@Param("id") int id);
+//    @Query("SELECT g FROM  Game g WHERE g.id = :id")
+    Game findGameById(/*@Param("id") */int id);
 
     @Query("SELECT g FROM Game g WHERE g.home = :home AND g.away = :away AND g.date = :date")
     Game findGameByTeamsAndDate(@Param("home") Team home,

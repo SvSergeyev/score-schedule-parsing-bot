@@ -2,10 +2,7 @@ package tech.sergeyev.scorescheduleparsingbot.controller;
 
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import tech.sergeyev.scorescheduleparsingbot.bot.Bot;
@@ -19,10 +16,8 @@ public class WebHookController {
         this.bot = bot;
     }
 
-    @RequestMapping(value = "/", method = RequestMethod.POST)
+    @PostMapping("/")
     public BotApiMethod<?> onUpdateReceived(@RequestBody Update update) {
         return bot.onWebhookUpdateReceived(update);
     }
-
-
 }

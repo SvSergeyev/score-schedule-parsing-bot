@@ -14,6 +14,10 @@ import javax.persistence.Id;
 public final class UserSubscription {
     @Id
     long chatId;
+
     boolean notified;
+
+
+    Team team;
 
 }

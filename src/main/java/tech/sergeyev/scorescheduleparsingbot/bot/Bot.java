@@ -17,16 +17,12 @@ import org.telegram.telegrambots.bots.TelegramWebhookBot;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-import tech.sergeyev.scorescheduleparsingbot.handler.DefaultHandler;
 import tech.sergeyev.scorescheduleparsingbot.handler.ReplyFacade;
 import tech.sergeyev.scorescheduleparsingbot.parser.Parser;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @Component
@@ -85,7 +81,7 @@ public final class Bot extends TelegramWebhookBot {
     @Override
     public BotApiMethod<?> onWebhookUpdateReceived(Update update) {
         if (update != null) {
-            return replyFacade.handle(update);
+            return replyFacade.defineHandler(update);
         } else
             return sendWarningMessageToAdmin();
 //        LOGGER.info(LocalDateTime.now() +

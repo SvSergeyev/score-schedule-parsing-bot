@@ -3,11 +3,11 @@ package tech.sergeyev.scorescheduleparsingbot.handler;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import tech.sergeyev.scorescheduleparsingbot.bot.BotState;
+import tech.sergeyev.scorescheduleparsingbot.bot.BotStates;
 import tech.sergeyev.scorescheduleparsingbot.cache.UserCache;
 
 @Component
-public class MessageHandler implements DefaultHandler {
+public class MessageHandler implements DefaultIncomingMessageHandler {
     private final UserCache userCache;
 
     public MessageHandler(UserCache userCache) {
@@ -16,19 +16,25 @@ public class MessageHandler implements DefaultHandler {
 
     @Override
     public SendMessage handle(Update update) {
-        String message = update.getMessage().getText().toLowerCase();
         long userId = update.getMessage().getFrom().getId();
 
-        BotState botState;
-        if (message.equals(ListOfCyrillicTextCommands.HOCKEY.getCyrillicText())) {
-            botState = BotState.HOCKEY;
+        if (userCache.getCurrentBotStateForUser(userId) == null) {
+            userCache.addBotStateForUser(userId, BotStates.MAIN_MENU);
         }
-        else if (message.equals(ListOfCyrillicTextCommands.FORMULA_1.getCyrillicText())) {
-            botState = BotState.FORMULA;
+
+        if (!update.getMessage().hasText()) {
+            return new SendMessage(
+                    String.valueOf(update.getMessage().getChatId()),
+                    "Сообщение без текста. Попробуйте написать что-нибудь, например \"хоккей\"");
         }
-        else {
-            botState = userCache.getCurrentBotStateForUser(userId);
-        }
-        return null;
+
+        //TODO: здесь как-то должны обрабатываться текстовые команды
+
+        return new SendMessage(
+                String.valueOf(update.getMessage().getChatId()),
+                "В будущем я смогу поискать что-нибудь про \"" +
+                        update.getMessage().getText() +
+                        "\", а пока я не понимаю текстовые сообщения." +
+                        " Воспользуйтесь кнопками, находящимся под сообщениями в чате");
     }
 }

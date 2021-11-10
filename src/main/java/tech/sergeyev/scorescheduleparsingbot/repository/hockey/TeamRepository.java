@@ -8,15 +8,15 @@ import tech.sergeyev.scorescheduleparsingbot.model.Team;
 
 @Repository
 public interface TeamRepository extends JpaRepository<Team, Integer> {
-    @Query("SELECT t FROM Team t WHERE t.name = :name")
-    Team findTeamByName(@Param("name") String name);
+//    @Query("SELECT t FROM Team t WHERE t.name = :name")
+    Team findTeamByName(/*@Param("name") */String name);
 
     @Query("SELECT t FROM Team t WHERE t.name = :name AND t.city = :city")
     Team findTeamByNameAndCity(@Param("name") String name, @Param("city") String city);
 
-    @Query("SELECT t FROM Team t WHERE t.abbreviation = :abbreviation")
-    Team findTeamByAbbreviation(@Param("abbreviation") String abbreviation);
+//    @Query("SELECT t FROM Team t WHERE t.abbreviation = :abbreviation")
+    Team findTeamByAbbreviation(/*@Param("abbreviation") */String abbreviation);
 
-    @Query("SELECT t FROM Team t WHERE t.id = :id")
-    Team findById(@Param("id") int id);
+//    @Query("SELECT t FROM Team t WHERE t.id = :id")
+    Team findById(/*@Param("id") */int id);
 }

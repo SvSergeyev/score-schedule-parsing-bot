@@ -46,9 +46,10 @@ public final class UpgradableBlockParser extends HockeyParser {
             LocalDate date = convertToLocalDate(
                     getTextBySelector(document, UpgradableBlockSelectors.DATE.getSelector(), i));
 //            Блок, неактуальный в межсезонье
-//            if (localDate.isBefore(LocalDate.now())) {
-//                break;
-//            }
+            if (date.isBefore(LocalDate.now())) {
+                break;
+            }
+//
             Team home = teamService.getTeamByAbbreviation(
                     getTextBySelector(document, UpgradableBlockSelectors.HOME.getSelector(), i));
             Team away = teamService.getTeamByAbbreviation(
