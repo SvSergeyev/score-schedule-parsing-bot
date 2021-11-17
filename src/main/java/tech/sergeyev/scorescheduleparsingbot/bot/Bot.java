@@ -17,7 +17,7 @@ import org.telegram.telegrambots.bots.TelegramWebhookBot;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import tech.sergeyev.scorescheduleparsingbot.handler.ReplyFacade;
+import tech.sergeyev.scorescheduleparsingbot.handler.DefaultFacade;
 import tech.sergeyev.scorescheduleparsingbot.parser.Parser;
 
 import javax.annotation.PostConstruct;
@@ -35,7 +35,7 @@ public final class Bot extends TelegramWebhookBot {
 
     final List<Parser> parsers = new ArrayList<>();
     Parser hockeyParser;
-    ReplyFacade replyFacade;
+    DefaultFacade facade;
 
     @Value("${bot.Username}")
     String botUsername;
@@ -48,11 +48,11 @@ public final class Bot extends TelegramWebhookBot {
 
     @Autowired
     public Bot(@Qualifier("hockeyParser") Parser hockeyParser,
-               ReplyFacade replyFacade) {
+               DefaultFacade facade) {
         this.hockeyParser = hockeyParser;
         parsers.add(hockeyParser);
 
-        this.replyFacade = replyFacade;
+        this.facade = facade;
     }
 
     @PostConstruct
@@ -81,18 +81,9 @@ public final class Bot extends TelegramWebhookBot {
     @Override
     public BotApiMethod<?> onWebhookUpdateReceived(Update update) {
         if (update != null) {
-            return replyFacade.defineHandler(update);
+            return facade.handleUpdate(update);
         } else
             return sendWarningMessageToAdmin();
-//        LOGGER.info(LocalDateTime.now() +
-//                ": Get message from: " + update.getMessage().getChatId() +
-//                " with text: " + update.getMessage().getText());
-//        String text = update.getMessage().getText();
-//        long chatId = update.getMessage().getChatId();
-//        SendMessage reply = new SendMessage();
-//        reply.setChatId(String.valueOf(chatId));
-//        reply.setText(text);
-//        return reply;
     }
 
     private SendMessage sendWarningMessageToAdmin() {

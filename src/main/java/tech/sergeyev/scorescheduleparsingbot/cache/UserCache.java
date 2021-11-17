@@ -17,6 +17,6 @@ public class UserCache implements DefaultCache {
 
     public BotStates getCurrentBotStateForUser(long userId) {
         BotStates currentBotState = allUsersBotStates.get(userId);
-        return Objects.requireNonNullElse(currentBotState, BotStates.MAIN_MENU);
+        return Objects.requireNonNullElse(currentBotState, BotStates.SHOW_MAIN);
     }
 }

@@ -1,13 +1,13 @@
-package tech.sergeyev.scorescheduleparsingbot.handler;
+package tech.sergeyev.scorescheduleparsingbot.handler.text;
 
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.Message;
 import tech.sergeyev.scorescheduleparsingbot.bot.BotStates;
 import tech.sergeyev.scorescheduleparsingbot.cache.UserCache;
 
 @Component
-public class MessageHandler implements DefaultIncomingMessageHandler {
+public class MessageHandler implements DefaultTextMessageHandler {
     private final UserCache userCache;
 
     public MessageHandler(UserCache userCache) {
@@ -15,25 +15,25 @@ public class MessageHandler implements DefaultIncomingMessageHandler {
     }
 
     @Override
-    public SendMessage handle(Update update) {
-        long userId = update.getMessage().getFrom().getId();
+    public SendMessage handle(Message message) {
+        long userId = message.getFrom().getId();
 
         if (userCache.getCurrentBotStateForUser(userId) == null) {
-            userCache.addBotStateForUser(userId, BotStates.MAIN_MENU);
+            userCache.addBotStateForUser(userId, BotStates.SHOW_MAIN);
         }
 
-        if (!update.getMessage().hasText()) {
+        if (!message.hasText()) {
             return new SendMessage(
-                    String.valueOf(update.getMessage().getChatId()),
+                    String.valueOf(message.getChatId()),
                     "Сообщение без текста. Попробуйте написать что-нибудь, например \"хоккей\"");
         }
 
         //TODO: здесь как-то должны обрабатываться текстовые команды
 
         return new SendMessage(
-                String.valueOf(update.getMessage().getChatId()),
+                String.valueOf(message.getChatId()),
                 "В будущем я смогу поискать что-нибудь про \"" +
-                        update.getMessage().getText() +
+                        message.getText() +
                         "\", а пока я не понимаю текстовые сообщения." +
                         " Воспользуйтесь кнопками, находящимся под сообщениями в чате");
     }

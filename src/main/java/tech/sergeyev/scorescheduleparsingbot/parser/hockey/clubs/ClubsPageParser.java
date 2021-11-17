@@ -13,7 +13,6 @@ import tech.sergeyev.scorescheduleparsingbot.service.Transcriptor;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 @PropertySource("classpath:bot.properties")
@@ -82,22 +81,22 @@ public final class ClubsPageParser extends HockeyParser {
                 .replace(" ", "_")
                 .replace("\u02B9", "");
 
-        TeamsAbbreviations abbreviation = null;
+        Teams abbreviation = null;
         if (name.equals("DINAMO")) {
             String cityInLatin = Transcriptor.transcriptCyrillicToLatin(team.getCity().toUpperCase());
             DinamoCities city = DinamoCities.valueOf(cityInLatin);
             switch (city) {
                 case MOSKVA:
-                    abbreviation = TeamsAbbreviations.DINAMO_MSK;
+                    abbreviation = Teams.DINAMO_MSK;
                     break;
                 case RIGA:
-                    abbreviation = TeamsAbbreviations.DINAMO_R;
+                    abbreviation = Teams.DINAMO_R;
                     break;
                 case MINSK:
-                    abbreviation = TeamsAbbreviations.DINAMO_MN;
+                    abbreviation = Teams.DINAMO_MN;
             }
         } else {
-            abbreviation = TeamsAbbreviations.valueOf(name);
+            abbreviation = Teams.valueOf(name);
         }
         return abbreviation.getAbbreviation();
     }
