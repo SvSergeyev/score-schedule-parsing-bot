@@ -11,31 +11,42 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class MainMenuService {
+public class MainMenuService implements MenuBuilder {
 // TODO: тут формируется главное меню
 
-    public SendMessage getMainMenuMessage() {
-        SendMessage mainMenuMessage = new SendMessage();
-
-        return mainMenuMessage;
+    public SendMessage getMessage(long chatId) {
+        return buildMenuMessage(chatId);
     }
 
-    private ReplyKeyboardMarkup getMainMenuKeyboard() {
+    @Override
+    public SendMessage buildMenuMessage(long chatId) {
+        SendMessage reply = new SendMessage();
+        reply.enableMarkdown(true);
+        reply.setChatId(String.valueOf(chatId));
+        return reply;
+    }
+
+    @Override
+    public ReplyKeyboardMarkup getKeyBoard() {
         ReplyKeyboardMarkup markup = new ReplyKeyboardMarkup();
         markup.setSelective(true);
         markup.setResizeKeyboard(true);
         markup.setOneTimeKeyboard(true);
 
         List<KeyboardRow> keyboard = new ArrayList<>();
-        KeyboardRow hockeyRow = new KeyboardRow();
-        KeyboardRow helpRow = new KeyboardRow();
-        KeyboardRow mySubscribesRow = new KeyboardRow();
-        hockeyRow.add(new KeyboardButton("Хоккей"));
-        helpRow.add(new KeyboardButton("Помощь"));
-        mySubscribesRow.add(new KeyboardButton("Мои подписки"));
-        keyboard.add(hockeyRow);
-        keyboard.add(helpRow);
-        keyboard.add(mySubscribesRow);
+        KeyboardRow row = new KeyboardRow();
+        KeyboardRow row1 = new KeyboardRow();
+        KeyboardRow row2 = new KeyboardRow();
+        KeyboardRow row3 = new KeyboardRow();
+        // тут приветственное сообщение
+        row.add(new KeyboardButton("Заглушка-заглушечка темные очи, я люблю тебя заглушечка очень"));
+        row1.add(new KeyboardButton("Хоккей"));
+        row2.add(new KeyboardButton("Помощь"));
+        row3.add(new KeyboardButton("Мои подписки"));
+        keyboard.add(row);
+        keyboard.add(row1);
+        keyboard.add(row2);
+        keyboard.add(row3);
         markup.setKeyboard(keyboard);
         return markup;
     }
